@@ -3,7 +3,7 @@
 import { Skip } from "@/interfaces/skip";
 import useSWR from "swr";
 
-const API_BASE_URL = "https://app.wewantwaste.co.uk/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL!;
 
 const fetcher = async (url: string) => {
   const response = await fetch(url);
