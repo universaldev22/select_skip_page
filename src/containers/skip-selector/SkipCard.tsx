@@ -1,8 +1,16 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Radio, AlertTriangle } from "lucide-react";
 import { SkipCardProps } from "@/interfaces/skip";
 
-export const SkipCard = ({ skip, isSelected, onSelect }: SkipCardProps) => {
+const IMAGE_BASE =
+  "https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/";
+
+export const SkipCard: React.FC<SkipCardProps> = ({
+  skip,
+  isSelected,
+  onSelect,
+}) => {
   const formattedPrice = skip.price_before_vat
     ? new Intl.NumberFormat("en-GB", {
         style: "currency",
@@ -10,97 +18,80 @@ export const SkipCard = ({ skip, isSelected, onSelect }: SkipCardProps) => {
       }).format(skip.price_before_vat * (1 + skip.vat / 100))
     : "Contact for Price";
 
+  const imageUrl = `${IMAGE_BASE}${skip.size}-yarder-skip.jpg`;
+
   return (
     <motion.button
-      whileHover={{ scale: 1.02 }}
-      transition={{
-        scale: { duration: 0.3, ease: [0.23, 1, 0.32, 1] },
-      }}
       onClick={() => onSelect(skip)}
+      whileHover={{ scale: 1.02 }}
+      transition={{ scale: { duration: 0.2, ease: [0.23, 1, 0.32, 1] } }}
       className={`
-        relative overflow-hidden rounded-2xl p-6 w-full text-left
-        ${isSelected
-          ? "bg-blue-500/10 backdrop-blur-2xl border-2 border-blue-400/30"
-          : "bg-black/20 backdrop-blur-xl border-2 border-transparent"}
-        transition-all duration-300 cursor-pointer group
+        group relative flex flex-col h-full w-full overflow-hidden rounded-2xl
+        border-2 ${isSelected
+          ? "border-blue-400/50 bg-blue-500/10 backdrop-blur-2xl"
+          : "border-transparent bg-black/20 backdrop-blur-xl"}
         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
+        cursor-pointer transition-all duration-200
       `}
     >
-      {/* shimmer */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        initial={false}
-        animate={isSelected ? { opacity: 0.1 } : { opacity: 0 }}
-      />
-
-      {/* RADIO INPUT */}
-      <div
-        className={`
-          absolute top-4 right-4
-          transition-opacity duration-100
-          ${isSelected
-            ? "opacity-100"
-            : "opacity-0 group-hover:opacity-100"}
-        `}
-        aria-hidden="true"
-      >
-        <input
-          type="radio"
-          checked={isSelected}
-          readOnly
-          className="
-            w-4 h-4 text-blue-600 bg-gray-100 border-gray-300
-            focus:ring-blue-500 focus:ring-2
-            dark:focus:ring-blue-600 dark:ring-offset-gray-700
-            dark:focus:ring-offset-gray-700
-          "
+      {/* Image */}
+      <div className="relative w-full h-40 sm:h-48 bg-gray-800 overflow-hidden">
+        <img
+          src={imageUrl}
+          alt={`${skip.size}-yard skip`}
+          loading="lazy"
+          className="w-full h-full object-cover"
         />
+
+        {/* Size Badge */}
+        <span
+          className="absolute top-3 left-3 px-3 py-1 text-sm font-semibold bg-blue-600 text-white rounded-full"
+          aria-label={`${skip.size} yards`}
+        >
+          {skip.size} Yards
+        </span>
+
+        {/* Not allowed badge */}
+        {!skip.allowed_on_road && (
+          <div className="absolute bottom-3 left-3 flex items-center space-x-1 bg-amber-500/90 text-black px-3 py-1 rounded-full">
+            <AlertTriangle size={16} />
+            <span className="text-xs font-medium">Not Allowed On The Road</span>
+          </div>
+        )}
+
+        {/* Radio Icon */}
+        <div
+          className={`
+            absolute top-3 right-3 transition-opacity duration-100
+            ${isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"}
+          `}
+          aria-hidden="true"
+        >
+          <Radio
+            size={20}
+            className={isSelected ? "text-blue-400" : "text-gray-500"}
+          />
+        </div>
       </div>
 
-      <div className="relative z-10 flex flex-col h-full">
-        {/* Badges */}
-        <div className="flex items-center justify-between mb-6">
-          <motion.span
-            layout
-            className="px-4 py-1 text-sm font-medium bg-blue-500/10 border border-blue-400/20 text-blue-200 rounded-xl"
-            aria-label={`${skip.size} yards capacity`}
-          >
-            {skip.size} Yards
-          </motion.span>
-          {!skip.allowed_on_road && (
-            <motion.span
-              layout
-              className="px-4 py-1 text-sm font-medium bg-amber-500/10 border border-amber-400/20 text-amber-200 rounded-xl"
-              aria-label="Private property only"
-            >
-              Private Property Only
-            </motion.span>
-          )}
+      {/* Content */}
+      <div className="p-6 flex-1 flex flex-col items-center justify-between text-center w-full">
+        {/* Title & hire period */}
+        <div className="w-full">
+          <h3 className="text-2xl font-semibold mb-2 text-white">
+            {skip.size} Yard Skip
+          </h3>
+          <p className="text-gray-400 mb-4">
+            {skip.hire_period_days} day hire period
+          </p>
         </div>
 
-        {/* Title */}
-        <motion.h3
-          layout
-          className="text-2xl font-semibold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent mb-4"
-        >
-          {skip.size} Yard Skip
-        </motion.h3>
-
-        {/* Details */}
-        <div className="space-y-4 flex-1">
-          <motion.p
-            layout
-            className="text-gray-400"
-            aria-label={`${skip.hire_period_days} day hire period`}
-          >
-            {skip.hire_period_days} day hire period
-          </motion.p>
-          <motion.p layout className="flex items-baseline space-x-2">
-            <span className="font-mono text-3xl font-bold bg-gradient-to-r from-blue-400 to-blue-200 bg-clip-text text-transparent">
-              {formattedPrice}
-            </span>
-            <span className="text-sm text-gray-400">per week</span>
-          </motion.p>
+        {/* Price */}
+        <div className="w-full mb-2">
+          <span className="font-mono text-3xl font-bold tracking-tighter bg-gradient-to-r from-blue-400 to-blue-200 bg-clip-text text-transparent">
+            {formattedPrice}
+          </span>
+          <span className="ml-1 text-sm text-gray-400">per week</span>
         </div>
       </div>
     </motion.button>
