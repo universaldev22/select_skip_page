@@ -22,6 +22,18 @@ A modern **Next .js 15** demo that lets users choose the perfect skip size—ani
 
 ---
 
+## 🔧 Install Dependencies
+Install it via NPM:
+
+```bash
+npm install
+```
+
+Install it via Yarn:
+
+```bash
+yarn
+```
 
 ## .env keys
 | Key | Example |
