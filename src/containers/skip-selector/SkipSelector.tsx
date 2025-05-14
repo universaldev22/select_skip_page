@@ -2,9 +2,9 @@
 
 import React from "react"
 import { motion } from "framer-motion"
-import { SkipCard } from "./SkipCard"
-import { SkipCardSkeleton } from "./SkipCardSkeleton"
-import { SelectedSkipOverlay } from "./SelectedSkipOverlay"
+import { SkipCard } from "@/components/Skip/SkipCard"
+import { SkipCardSkeleton } from "@/components/Skip/SkipCardSkeleton"
+import { SelectedSkipOverlay } from "@/components/Skip/SelectedSkipOverlay"
 import { useSkips } from "@/hooks/useSkips"
 import { useSkipStore } from "@/store/skipStore"
 
